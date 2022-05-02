@@ -40,3 +40,11 @@ zoneSelectionnee =
     height: 0
 }
 ```
+
+### Supprimer la zone sélectionée
+
+Pour supprimer la zone sélectionnée au lassot (reset), il vous suffit d'appeler la méthode `deleteSelectedZoneIfExists`:
+```js
+tampon.deleteSelectedZoneIfExists()
+```
+*Cette méthode est également appelée dans le destructeur `destroy`*

@@ -2,6 +2,8 @@
  * 
  * Composant ZoneSelect
  * 
+ * @version 1.0.0
+ * 
  * @author Clément DUSSOLLIER
  * 
  */
@@ -34,19 +36,32 @@ class ZoneSelect{
 
         this.tamponDiv = document.createElement('div');
 
-        this.initialiser();
+        this.initialize();
     }
 
-    get getData(){
-        this.selectedZone.width = this.selectedZone.end.x - this.selectedZone.start.x;
-        this.selectedZone.height = this.selectedZone.end.y - this.selectedZone.start.y;
-        return this.selectedZone;
+    getData(){
+        //Calcul des différence de manière à bien prendre les coordonnées depuis le coin haut-gauche de l'élément parent
+        const differenceX = this.pdfZone.getBoundingClientRect().left
+        const differenceY = this.pdfZone.getBoundingClientRect().top
+
+        //de manière à ne pas manipuler directement la zone sélectionnée par l'utilisateur
+        let resultSelectedZone = {start:{x:0,y:0},end:{x:0,y:0},width:0,height:0} 
+        
+        resultSelectedZone.start.x  = this.selectedZone.start.x - differenceX
+        resultSelectedZone.end.x    = this.selectedZone.end.x - differenceX
+        resultSelectedZone.start.y  = this.selectedZone.start.y - differenceY
+        resultSelectedZone.end.y    = this.selectedZone.end.y - differenceY
+
+        resultSelectedZone.width    = this.selectedZone.end.x - this.selectedZone.start.x;
+        resultSelectedZone.height   = this.selectedZone.end.y - this.selectedZone.start.y;
+        return resultSelectedZone;
     }
 
     /**
      * Initialisation des éléments nécessaires au fonctionnement de la sélection
      */
-    initialiser(){
+    initialize(){
+        this.deleteSelectedZoneIfExists()
 
         //  Create the DIV for the selection zone
         this.tamponDiv.id                = 'tampon';
@@ -56,12 +71,9 @@ class ZoneSelect{
         this.pdfZone.append(this.tamponDiv);
         this.pdfZone.style.cursor = 'crosshair';
 
-        // document.onmousemove = (e) => {
-        //     if(this.drawing){
-        //         this.drawZone(e);
-        //     }
-        // }
-        document.onmousemove=(t=>{this.drawing&&this.drawZone(t)})
+        document.onmousemove = (e) => {
+            this.drawZone(e);
+        }
 
         this.pdfZone.onmousedown = (e) => {this.startDraw(e)}
 
@@ -71,10 +83,36 @@ class ZoneSelect{
     }
 
     /**
+     * Permet de tétruire l'objet courant
+     */
+    destroy(){
+        this.deleteSelectedZoneIfExists();
+        this.pdfZone.style.cursor = 'auto'
+        this.pdfZone.removeEventListener('onmousedown', this.startDraw)
+        this.pdfZone.removeEventListener('onmousemove', this.drawZone)
+
+        delete this;
+    }
+
+    /**
+     * Permet de supprimer la zone sélectionné à l'écran si elle est présente
+     */
+    deleteSelectedZoneIfExists(){
+        //On supprime l'éventuel tampon déjà présent dans la page
+        //  ce de manière à ne pas cumuler les tampon et perdre le navigateur lors de la récupération des données
+        if(document.querySelector('#tampon') != null){
+            document.querySelector('#tampon').remove()
+        }
+    }
+
+    /**
      * Permet de modifier le traçage de la zone en fonciton de l'emplacement du curseur
      * @param {object} e Evénement du déplacement de la souris (onmousemove)
      */
     drawZone(e){
+        if(!this.drawing)
+            return;
+        
         let minY = this.pdfZone.getBoundingClientRect().top;
         let minX = this.pdfZone.getBoundingClientRect().left;
         let maxY = minY + this.pdfZone.offsetHeight - 4;
