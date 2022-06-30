@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Laçot</title>
+        <meta charset="utf-8">
+
+        <title>zone-selection</title>
 
         <style>
             #zone-tampon{
@@ -13,11 +15,14 @@
                 border: 1px solid darkgrey;
             }
 
-            /* #tampon{
-                border: 2px solid red;
+            .credit{
                 position: fixed;
-                display: none;
-            } */
+                right: 0;
+                bottom: 0;
+                font-family: sans-serif;
+                padding: 15px;
+                color: grey
+            }
         </style>
     </head>
     <body>
@@ -26,6 +31,8 @@
             <img src="https://www.javascripttutorial.net/wp-content/uploads/2020/02/JavaScript-CSS-Box-Model.png"/>
         </div>
         <button style="position: fixed" onclick="getSelectedDatas()">data</button>
+
+        <div class="credit">Clément DUSSOLLIER | 2022</div>
     </body>
 
     <script src="zone-selection.js"></script>
@@ -34,52 +41,9 @@
         const tampon = new ZoneSelect('zone-tampon');
 
         const getSelectedDatas = () => {
-            console.log(tampon.getData);
+            console.log(tampon.getData());
+            alert('check console !');
         }
-
-        // var bDessiner = false;
-        // var coordDepart = {x: 0, y: 0};
-        // var coordArrive = {x: 0, y: 0};
-
-        // document.onmousemove = (e) => {
-        //     if(bDessiner){
-        //         let zoneTampon = document.querySelector('#zone-tampon')
-        //         let maxY = zoneTampon.getBoundingClientRect().top + zoneTampon.offsetHeight;
-        //         let maxX = zoneTampon.getBoundingClientRect().left + zoneTampon.offsetWidth;
-
-        //         coordArrive = {
-        //             x: ((e.clientX > maxX) ? maxX : e.clientX),
-        //             y: ((e.clientY > maxY) ? maxY : e.clientY)
-        //         };
-        //         let zone = document.querySelector('#tampon');
-        //         zone.style.width = (coordArrive.x - coordDepart.x) + 'px'
-        //         zone.style.height = (coordArrive.y - coordDepart.y) + 'px'
-
-        //         zone.style.display = 'block';
-
-        //         if(!(zone.offsetHeight > 0 || zone.offsetWidth > 0)){
-        //             zone.style.display = 'none';
-        //         }
-        //     }
-        // }
-
-        // document.querySelector('#zone-tampon').onmousedown = (e) => {
-        //     e.preventDefault();
-        //     bDessiner = true;
-        //     coordDepart = {x: e.clientX, y: e.clientY};
-        //     coordArrive = {x: e.clientX, y: e.clientY};
-            
-        //     let zone = document.querySelector('#tampon');
-        //     zone.style.left = (coordDepart.x - 2) + 'px'
-        //     zone.style.top = (coordDepart.y - 2) + 'px'
-        //     zone.style.width = '0px'
-        //     zone.style.height = '0px'
-        //     zone.style.display = 'none'
-        // }
-
-        // document.onmouseup = (e) => {
-        //     bDessiner = false;
-        // }
 
     </script>
 </html>
